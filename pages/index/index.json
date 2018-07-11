@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "canvas drawer",
+  "usingComponents": {
+    "canvasdrawer": "/components/canvasdrawer/canvasdrawer"
+  }
+}

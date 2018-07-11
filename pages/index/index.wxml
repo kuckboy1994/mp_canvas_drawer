@@ -1,0 +1,4 @@
+<!--index.wxml-->
+<view class="container">
+  <canvasdrawer width="{{300}}" height="{{400}}" painting="{{painting}}" class="canvasdrawer"/>
+</view>
