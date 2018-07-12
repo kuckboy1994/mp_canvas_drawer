@@ -12,7 +12,7 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.1.1",
-	"appid": "wx354db8959373652f",
+	"appid": "",
 	"projectname": "mp_canvas_drawer",
 	"isGameTourist": false,
 	"condition": {

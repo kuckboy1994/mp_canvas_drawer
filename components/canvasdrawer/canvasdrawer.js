@@ -1,17 +1,7 @@
-/* global getApp Component wx */
-
-const app = getApp()
+/* global Component wx */
 
 Component({
   properties: {
-    width: {
-      type: Number,
-      value: 640
-    },
-    height: {
-      type: Number,
-      value: 800
-    },
     show: {
       type: Boolean,
       value: false
@@ -20,13 +10,15 @@ Component({
       type: Object,
       value: {view: []},
       observer (newVal, oldVal) {
-        this.readyPigment()
+        if (newVal.width && newVal.height) {
+          this.readyPigment()
+        }
       }
     }
   },
   data: {
-    screenWidth: wx.getSystemInfoSync().screenWidth,
-    screenHeight: wx.getSystemInfoSync().screenHeight,
+    width: 100,
+    height: 100,
 
     index: 0,
     imageList: [],
@@ -35,12 +27,15 @@ Component({
   ctx: null,
   ready () {
     this.ctx = wx.createCanvasContext('canvasdrawer', this)
-    console.log(this.ctx)
   },
   methods: {
     readyPigment () {
-      const { views } = this.data.painting
-      console.log(views)
+      const { width, height, views } = this.data.painting
+      this.setData({
+        width,
+        height
+      })
+
       const inter = setInterval(() => {
         if (this.ctx) {
           clearInterval(inter)
@@ -76,20 +71,22 @@ Component({
     },
     startPainting () {
       const { tempFileList, painting: { views } } = this.data
-      console.log(tempFileList, views)
       for (let i = 0, imageIndex = 0; i < views.length; i++) {
         if (views[i].type === 'image') {
           this.drawImage({
             ...views[i],
             url: tempFileList[imageIndex]
           })
+          imageIndex++
         } else if (views[i].type === 'text') {
           this.drawText(views[i])
         } else if (views[i].type === 'rect') {
           this.drawRect(views[i])
         }
       }
-      this.ctx.draw()
+      this.ctx.draw(true, () => {
+        this.saveImageToLocal()
+      })
     },
     drawImage (params) {
       // console.log(params)
@@ -97,41 +94,82 @@ Component({
       this.ctx.drawImage(url, left, top, width, height)
     },
     drawText (params) {
-      // console.log(params)
-      const { MaxLineNumber = 2, breakWord, color, content, fontSize, left, lineHeight = 20, textAlign, top, width, bolder} = params
+      const { 
+        MaxLineNumber = 2, 
+        breakWord = false, 
+        color = 'black', 
+        content = '', 
+        fontSize = 16, 
+        top = 0, 
+        left = 0, 
+        lineHeight = 20, 
+        textAlign = 'left', 
+        width, 
+        bolder = false,
+        textDecoration = 'none'
+      } = params
 
+      this.ctx.setTextBaseline('top')
       this.ctx.setTextAlign(textAlign)
       this.ctx.setFillStyle(color)
       this.ctx.setFontSize(fontSize)
 
-      let fillText = ''
-      let fillTop = top
-      let lineNum = 1
-      for (let i = 0; i < content.length; i++) {
-        fillText += [content[i]]
-        if (this.ctx.measureText(fillText).width > width) {
-          if (lineNum === MaxLineNumber) {
-            if (i !== content.length) {
-              fillText = fillText.substring(0, fillText.length - 1) + '...'
-              this.ctx.fillText(fillText, left, fillTop)
-              fillText = ''
-              break
+      if (!breakWord) {
+        this.ctx.fillText(content, left, top)
+        this.drawTextLine(left, top, textDecoration, color, fontSize, content)
+      } else {
+        let fillText = ''
+        let fillTop = top
+        let lineNum = 1
+        for (let i = 0; i < content.length; i++) {
+          fillText += [content[i]]
+          if (this.ctx.measureText(fillText).width > width) {
+            if (lineNum === MaxLineNumber) {
+              if (i !== content.length) {
+                fillText = fillText.substring(0, fillText.length - 1) + '...'
+                this.ctx.fillText(fillText, left, fillTop)
+                this.drawTextLine(left, fillTop, textDecoration, color, fontSize, fillText)
+                fillText = ''
+                break
+              }
             }
+            this.ctx.fillText(fillText, left, fillTop)
+            this.drawTextLine(left, fillTop, textDecoration, color, fontSize, fillText)
+            fillText = ''
+            fillTop += lineHeight
+            lineNum ++
           }
-          this.ctx.fillText(fillText, left, fillTop)
-          fillText = ''
-          fillTop += lineHeight
-          lineNum ++
         }
+        this.ctx.fillText(fillText, left, fillTop)
+        this.drawTextLine(left, fillTop, textDecoration, color, fontSize, fillText)
       }
-      this.ctx.fillText(fillText, left, fillTop)
       
       if (bolder) {
         this.drawText({
           ...params,
           left: left + 0.3,
           top: top + 0.3,
-          bolder: false
+          bolder: false,
+          textDecoration: 'none' 
+        })
+      }
+    },
+    drawTextLine (left, top, textDecoration, color, fontSize, content) {
+      if (textDecoration === 'underline') {
+        this.drawRect({
+          background: color,
+          top: top + fontSize * 1.2,
+          left: left - 1,
+          width: this.ctx.measureText(content).width + 2,
+          height: 1
+        })
+      } else if (textDecoration === 'line-through') {
+        this.drawRect({
+          background: color,
+          top: top + fontSize * 0.6,
+          left: left - 1,
+          width: this.ctx.measureText(content).width + 2,
+          height: 1
         })
       }
     },
@@ -155,6 +193,21 @@ Component({
           }
         })
       })
+    },
+    saveImageToLocal () {
+      const { width, height } = this.data
+      wx.canvasToTempFilePath({
+        x: 0,
+        y: 0,
+        width,
+        height,
+        canvasId: 'canvasdrawer',
+        success: res => {
+          if (res.errMsg === 'canvasToTempFilePath:ok') {
+            this.triggerEvent('getImage', {tempFilePath: res.tempFilePath})
+          }
+        } 
+      }, this)
     }
   }
 })

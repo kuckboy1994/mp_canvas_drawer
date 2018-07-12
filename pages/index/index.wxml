@@ -1,4 +1,8 @@
 <!--index.wxml-->
 <view class="container">
-  <canvasdrawer width="{{300}}" height="{{400}}" painting="{{painting}}" class="canvasdrawer"/>
+  <image src="{{shareImage}}" class="share-image"></image>
+  <canvasdrawer painting="{{painting}}" class="canvasdrawer" bind:getImage="eventGetImage"/>
+
+  <button bind:tap="eventDraw">绘制</button>
+  <button bind:tap="eventSave">保存到本地</button>
 </view>
