@@ -23,8 +23,7 @@
 
 左侧是 `canvasdrawer` 绘制的，右侧是UI给的图
 
-<img src="http://wx2.sinaimg.cn/mw690/ec4d7780gy1ft7fb6r7q3j20ku0uutqd.jpg" style="display:inline-block;width:40%;"/>
-<img src="http://wx3.sinaimg.cn/mw690/ec4d7780gy1ft7f9qixvzj20ku0uuk9v.jpg" style="display:inline-block;width:40%;"/>
+![](http://wx2.sinaimg.cn/mw690/ec4d7780gy1ft7h2qezidj21140qw1kx.jpg)
 
 ## 使用
 
