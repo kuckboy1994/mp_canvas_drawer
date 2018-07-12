@@ -15,11 +15,16 @@
   - ...
 - 代码量小 —— 未压缩20k
 
+### 试用
+
+```
+git clone https://github.com/kuckboy1994/mp_canvas_drawer
+```
+真机上试用配置上自己的 `appid` 即可
+
 ## 演示
 
 ![](http://wx3.sinaimg.cn/mw690/ec4d7780gy1ft7eihf9f0g206u0bnhdw.gif)
-
-如未正常显示，[点击查看](ttp://wx3.sinaimg.cn/mw690/ec4d7780gy1ft7eihf9f0g206u0bnhdw.gif) 
 
 左侧是 `canvasdrawer` 绘制的，右侧是UI给的图
 
@@ -42,7 +47,7 @@
   <canvasdrawer painting="{{painting}}" bind:getImage="eventGetImage"/>
   ```
   `painting` 是需要传入的 `json`。 `getImage` 方法是绘图完成之后的回调函数，在 `event.detail` 中返回绘制完成的图片地址。
-- 当前栗子中的 `painting` 简单展示一下。详细配置请看 [API](https://github.com/kuckboy1994/mp_canvas_drawer#API)
+- 当前栗子中的 `painting` 简单展示一下。详细配置请看 [API](https://github.com/kuckboy1994/mp_canvas_drawer#api)
 
 
   <details><summary>painting（点击展开）</summary><br>
