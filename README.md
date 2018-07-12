@@ -1,6 +1,6 @@
 ## canvas drawer
 
-做微信小程序中最好用的 `canvas` 绘图组件之一。
+做微信小程序中最好用的 `canvas` 绘图组件之一。
 
 当前环境下，大家都非常需要分享到朋友圈这个功能，但是实现起来各有心酸（坑比较多），所以才有了如下的 `canvas` 绘图工具。 
 
@@ -11,7 +11,7 @@
   - 绘制文本（换行、超出内容省略号、中划线、下划线、文本加粗）
   - 绘制图片
   - 绘制矩形
-  - 保存图片
+  - 保存图片
   - ...
 - 代码量小 —— 未压缩20k
 
@@ -25,13 +25,11 @@
 
 <img src="http://wx2.sinaimg.cn/mw690/ec4d7780gy1ft7fb6r7q3j20ku0uutqd.jpg" style="display:inline-block;width:40%;"/>
 <img src="http://wx3.sinaimg.cn/mw690/ec4d7780gy1ft7f9qixvzj20ku0uuk9v.jpg" style="display:inline-block;width:40%;"/>
-<!-- ![](http://wx2.sinaimg.cn/mw690/ec4d7780gy1ft7fb6r7q3j20ku0uutqd.jpg) -->
-<!-- ![](http://wx3.sinaimg.cn/mw690/ec4d7780gy1ft7f9qixvzj20ku0uuk9v.jpg) -->
 
 ## 使用
-
+
 - `git clone https://github.com/kuckboy1994/mp_canvas_drawer` 到本地
-- 把 `components` 中的 `canvasdrawer` 拷贝到自己项目下。
+- 把 `components` 中的 `canvasdrawer` 拷贝到自己项目下。
 - 在使用页面注册组件
   ```json
   {
@@ -44,11 +42,11 @@
   ```html
   <canvasdrawer painting="{{painting}}" bind:getImage="eventGetImage"/>
   ```
-  `painting` 是需要传入的 `json`。 `getImage` 方法是绘图完成之后的回调函数，在 `event.detail` 中返回绘制完成的图片地址。
-- 当前栗子中的 `painting` 简单展示一下。详细配置请看 [API](https://github.com/kuckboy1994/mp_canvas_drawer#API)
+  `painting` 是需要传入的 `json`。 `getImage` 方法是绘图完成之后的回调函数，在 `event.detail` 中返回绘制完成的图片地址。
+- 当前栗子中的 `painting` 简单展示一下。详细配置请看 [API](https://github.com/kuckboy1994/mp_canvas_drawer#API)
 
 
-  <details><summary>painting（点击展开）</summary><br>
+  <details><summary>painting（点击展开）</summary><br>
 
   ```js
   {
@@ -168,42 +166,44 @@
 
 ## API
 
-数据对象的第一层需要三个参数: `width`、`height`、`views`。当前配置中所有的数字都是没有单位的。这就意味着 `canvas` 绘制的是一个比例图。具体显示的大小直接把返回的图片路径放置到 `image` 标签中即可。
+数据对象的第一层需要三个参数: `width`、`height`、`views`。当前配置中所有的数字都是没有单位的。这就意味着 `canvas` 绘制的是一个比例图。具体显示的大小直接把返回的图片路径放置到 `image` 标签中即可。
 
-当前可以绘制3种类型的配置: `image`、`text`、`rect`。配置的属性基本上使用的都是 `css` 的驼峰名称，还是比较好理解的。 
+当前可以绘制3种类型的配置: `image`、`text`、`rect`。配置的属性基本上使用的都是 `css` 的驼峰名称，还是比较好理解的。 
 
 ### image（图片）
-属性 | 含义 | 默认值 | 可选值
+属性 | 含义 | 默认值 | 可选值
 ---|---|---|---
-url | 绘制的图片地址 | | 
-top | 左上角距离画板顶部的距离 | | 
-left | 左上角距离画板左侧的距离 | | 
+url | 绘制的图片地址 | | 
+top | 左上角距离画板顶部的距离 | | 
+left | 左上角距离画板左侧的距离 | | 
 width | 要画多宽 | 0 | 
 height | 要画多高 | 0 | 
 
 ### text（文本）
-属性 | 含义 | 默认值 | 可选值
+属性 | 含义 | 默认值 | 可选值
 ---|---|---|---
-content | 绘制的图片地址 | ''（空字符串） | 
+content | 绘制的图片地址 | ''（空字符串） | 
 color | 颜色 | black | 
 fontSize | 字体大小 | 16 | 
-textAlign | 文字对齐方式 | left | center、right 
-lineHeight | 行高，只有在多行文本中才有用 | 20 |  
-top | 文本左上角距离画板顶部的距离 | 0 | 
-left | 文本左上角距离画板左侧的距离 | 0 | 
-breakWord | 是否需要换行 | false | true 
-MaxLineNumber | 最大行数，只有设置 `breakWord: true` ，当前属性才有效，超出行数内容的显示为... | 2 | 
-width | 和 `MaxLineNumber` 属性配套使用，`width` 就是达到换行的宽度 |  | 
+textAlign | 文字对齐方式 | left | center、right 
+lineHeight | 行高，只有在多行文本中才有用 | 20 | 
+top | 文本左上角距离画板顶部的距离 | 0 | 
+left | 文本左上角距离画板左侧的距离 | 0 | 
+breakWord | 是否需要换行 | false | true 
+MaxLineNumber | 最大行数，只有设置 `breakWord: true` ，当前属性才有效，超出行数内容的显示为... | 2 | 
+width | 和 `MaxLineNumber` 属性配套使用，`width` 就是达到换行的宽度 |  | 
 bolder | 是否加粗 | false | true 
-textDecoration | 显示中划线、下划线效果 | none | underline（下划线）、line-through（中划线）
+textDecoration | 显示中划线、下划线效果 | none | underline（下划线）、line-through（中划线）
 
 ### rect (矩形，线条)
-属性 | 含义 | 默认值 | 可选值
+属性 | 含义 | 默认值 | 可选值
 ---|---|---|---
 background | 背景颜色 | black | 
-top | 左上角距离画板顶部的距离 | | 
-left | 左上角距离画板左侧的距离 | | 
+top | 左上角距离画板顶部的距离 | | 
+left | 左上角距离画板左侧的距离 | | 
 width | 要画多宽 | 0 | 
 height | 要画多高 | 0 | 
 
-## 看了
+## TIPS
+
+如果有什么疑问，欢迎 `issues`。 如果觉得不错，能不能送我小✨✨
