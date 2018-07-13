@@ -1,0 +1,10 @@
+.share-image {
+  width: 600rpx;
+  height: 888rpx;
+  margin: 0 75rpx;
+  border: 1px solid black;
+}
+
+button {
+  margin-top: 20rpx;
+}

@@ -1,0 +1,11 @@
+<!--index.wxml-->
+<view class="container">
+  <image src="{{shareImage}}" class="share-image"></image>
+  <canvasdrawer painting="{{painting}}" class="canvasdrawer" bind:getImage="eventGetImage"/>
+
+  <button bind:tap="eventDraw">再绘制一次</button>
+
+  <button bind:tap="eventDrawCry">疯狂绘制模式😂</button>
+
+  <button bind:tap="eventSave">保存到本地</button>
+</view>

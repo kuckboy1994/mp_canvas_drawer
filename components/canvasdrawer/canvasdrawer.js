@@ -2,16 +2,17 @@
 
 Component({
   properties: {
-    show: {
-      type: Boolean,
-      value: false
-    },
     painting: {
       type: Object,
       value: {view: []},
       observer (newVal, oldVal) {
-        if (newVal.width && newVal.height) {
-          this.readyPigment()
+        if (!this.data.isPainting) {
+          if (newVal.width && newVal.height) {
+            this.setData({
+              isPainting: true
+            })
+            this.readyPigment()
+          }
         }
       }
     }
@@ -22,7 +23,9 @@ Component({
 
     index: 0,
     imageList: [],
-    tempFileList: []
+    tempFileList: [],
+
+    isPainting: false
   },
   ctx: null,
   ready () {
@@ -39,10 +42,18 @@ Component({
       const inter = setInterval(() => {
         if (this.ctx) {
           clearInterval(inter)
+          this.ctx.clearActions()
+          this.drawRect({
+            background: 'white',
+            top: 0,
+            left: 0,
+            width,
+            height
+          })
           this.getImageList(views)
           this.downLoadImages(0)
         }
-      }, 300)
+      }, 100)
     },
     getImageList (views) {
       const imageList = []
@@ -204,6 +215,11 @@ Component({
         canvasId: 'canvasdrawer',
         success: res => {
           if (res.errMsg === 'canvasToTempFilePath:ok') {
+            this.setData({
+              isPainting: false,
+              imageList: [],
+              tempFileList: []
+            })
             this.triggerEvent('getImage', {tempFilePath: res.tempFilePath})
           }
         } 

@@ -5,17 +5,12 @@ const app = getApp()
 Page({
   data: {
     painting: {},
-    shareImage: ''
-  },
-  eventDraw () {
-    wx.showLoading({
-      title: '绘制分享图片中',
-      mask: true
-    })
-    this.setData({
-      painting: {
+    paintingIndex: 0,
+    paintingList: [
+      {
         width: 375,
         height: 555,
+        clear: true,
         views: [
           {
             type: 'image',
@@ -124,7 +119,37 @@ Page({
             width: 125
           }
         ]
+      },
+      {
+        width: 375,
+        height: 555,
+        clear: true,
+        views: [
+          {
+            type: 'image',
+            url: 'https://hybrid.xiaoying.tv/miniprogram/viva-ad/1/1531447237017.jpeg',
+            top: 0,
+            left: 0,
+            width: 375,
+            height: 555
+          }
+        ]
       }
+    ],
+    shareImage: '',
+
+    mode: 'normal' // cry
+  },
+  eventDraw () {
+    wx.showLoading({
+      title: '绘制分享图片中',
+      mask: true
+    })
+    const { paintingList, paintingIndex } = this.data
+    this.setData({
+      mode: 'normal',
+      painting: paintingList[paintingIndex],
+      paintingIndex: paintingIndex === 0 ? 1 : 0
     })
   },
   eventSave () {
@@ -137,13 +162,28 @@ Page({
           duration: 2000
         })
       }
-  })
+    })
   },
   eventGetImage (event) {
     wx.hideLoading()
     const { tempFilePath } = event.detail
     this.setData({
       shareImage: tempFilePath
+    })
+    if (this.data.mode === 'cry') {
+      this.eventDrawCry()
+    }
+  },
+  eventDrawCry () {
+    wx.showLoading({
+      title: '刷新后停止绘制',
+      mask: true
+    })
+    const { paintingList, paintingIndex } = this.data
+    this.setData({
+      mode: 'cry',
+      painting: paintingList[paintingIndex],
+      paintingIndex: paintingIndex === 0 ? 1 : 0
     })
   }
 })

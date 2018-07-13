@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "canvas drawer 多图绘制",
+  "usingComponents": {
+    "canvasdrawer": "/components/canvasdrawer/canvasdrawer"
+  }
+}

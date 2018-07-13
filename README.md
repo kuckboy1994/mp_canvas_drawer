@@ -12,15 +12,20 @@
   - 绘制图片
   - 绘制矩形
   - 保存图片
+  - 多图绘制
   - ...
-- 代码量小 —— 未压缩20k
+- 代码量小
 
-### 试用
+## 体验
 
 ```
 git clone https://github.com/kuckboy1994/mp_canvas_drawer
 ```
-真机上试用配置上自己的 `appid` 即可
+想在手机上使用配置自己的 `appid` 即可。
+
+编译模式中已经为你配置好比较常用的两种模式：
+- 普通绘制，绘制单张分享图。
+- 多图绘制，连续绘制分享图
 
 ## 演示
 
@@ -170,7 +175,47 @@ git clone https://github.com/kuckboy1994/mp_canvas_drawer
 
 ## API
 
-数据对象的第一层需要三个参数: `width`、`height`、`views`。当前配置中所有的数字都是没有单位的。这就意味着 `canvas` 绘制的是一个比例图。具体显示的大小直接把返回的图片路径放置到 `image` 标签中即可。
+
+<details><summary>对象结构一览</summary><br>
+
+```js
+{
+  width: 375,
+  height: 555,
+  views: [
+    {
+      type: 'image',
+      url: 'url',
+      top: 0,
+      left: 0,
+      width: 375,
+      height: 555
+    },
+    {
+      type: 'text',
+      content: 'content',
+      fontSize: 16,
+      color: '#402D16',
+      textAlign: 'left',
+      top: 33,
+      left: 96,
+      bolder: true
+    },
+    {
+      type: 'rect',
+      background: 'color',
+      top: 0,
+      left: 0,
+      width: 375,
+      height: 555
+    }
+  ]
+}
+```
+</details>
+
+
+数据对象的第一层需要三个参数: `width`、`height`、`views`。配置中所有的数字都是没有单位的。这就意味着 `canvas` 绘制的是一个比例图。具体显示的大小直接把返回的图片路径放置到 `image` 标签中即可。
 
 当前可以绘制3种类型的配置: `image`、`text`、`rect`。配置的属性基本上使用的都是 `css` 的驼峰名称，还是比较好理解的。 
 
@@ -208,6 +253,34 @@ left | 左上角距离画板左侧的距离 | |
 width | 要画多宽 | 0 | 
 height | 要画多高 | 0 | 
 
+## Q&A
+0. 最佳实践
+
+    绘制操作的时候最好 `锁住屏幕` ，例如在点击绘制的时候
+    ```js
+    wx.showLoading({
+      title: '绘制分享图片中',
+      mask: true
+    })
+    ```
+    绘制完成之后
+    ```js
+    wx.hideLoading()
+    ```
+    具体可以参考项目下的 `/pages/multiple`
+
+1. 二维码和小程序码如何绘制？
+    - 二维码和小程序码可以通过调用[微信官方的接口](https://developers.weixin.qq.com/miniprogram/dev/api/qrcode.html)产生，需要后端配合。
+    - 然后走 `type: image` 类型进行绘制即可。
+2. 绘制流程相关
+    - `views` 数组中的顺序代表绘画的先后顺序，会有覆盖的现象。请各位使用者注意。
+3. 如何实现圆形头像？
+    - `canvas` 中没有绘制圆形图片的方法，所以使用了 `hack` 的方式来实现的。使用一张中间镂空的图片盖在头像上就可实现当前效果。
+4. `canvas drawer` 组件为什么不直接显示canvas画板和其内容呢？
+    - 考虑到大部分场景，我们都是用来把图片保存到本地，或用以展示。
+    - 保存到本地，返回临时文件给调用者一定是最佳的解决方式。
+    - 展示，转化成图片之后，就可以使用 `image` 基础组件的所有显示模式了，还能设置宽高。
+
 ## TIPS
 
-如果有什么疑问，欢迎 `issues`。 如果觉得不错，能不能送我小✨✨
+如果有什么疑问，欢迎 `issues`。 如果觉得不错，能不能送我小 ✨ ✨ ，然我有更多的动力更新。
