@@ -222,7 +222,7 @@ git clone https://github.com/kuckboy1994/mp_canvas_drawer
 ### image（图片）
 属性 | 含义 | 默认值 | 可选值
 ---|---|---|---
-url | 绘制的图片地址 | | 
+url | 绘制的图片地址，可以是本地图片，如：`/images/1.jpeg` | | 
 top | 左上角距离画板顶部的距离 | | 
 left | 左上角距离画板左侧的距离 | | 
 width | 要画多宽 | 0 | 

@@ -193,16 +193,21 @@ Component({
     getImageInfo (url) {
       return new Promise((resolve, reject) => {
         /* 获得要在画布上绘制的图片 */
-        wx.getImageInfo({
-          src: url,
-          complete (res) {
-            if (res.errMsg === 'getImageInfo:ok') {
-              resolve(res.path)
-            } else {
-              reject(new Error('getImageInfo fail'))
+        const objExp = new RegExp(/^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/)
+        if (objExp.test(url)) {
+          wx.getImageInfo({
+            src: url,
+            complete (res) {
+              if (res.errMsg === 'getImageInfo:ok') {
+                resolve(res.path)
+              } else {
+                reject(new Error('getImageInfo fail'))
+              }
             }
-          }
-        })
+          })
+        } else {
+          resolve(url)
+        }
       })
     },
     saveImageToLocal () {

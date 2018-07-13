@@ -19,7 +19,7 @@ Page({
         views: [
           {
             type: 'image',
-            url: 'https://hybrid.xiaoying.tv/miniprogram/viva-ad/1/1531103986231.jpeg',
+            url: '/images/1.jpeg',
             top: 0,
             left: 0,
             width: 375,
