@@ -19,7 +19,7 @@ Page({
         views: [
           {
             type: 'image',
-            url: '/images/1.jpeg',
+            url: '/images/background.jpeg',
             top: 0,
             left: 0,
             width: 375,
@@ -27,7 +27,7 @@ Page({
           },
           {
             type: 'image',
-            url: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83epJEPdPqQVgv6D8bojGT4DrGXuEC4Oe0GXs5sMsN4GGpCegTUsBgL9SPJkN9UqC1s0iakjQpwd4h4A/132',
+            url: '/images/avatar.jpeg',
             top: 27.5,
             left: 29,
             width: 55,
@@ -35,7 +35,7 @@ Page({
           },
           {
             type: 'image',
-            url: 'https://hybrid.xiaoying.tv/miniprogram/viva-ad/1/1531401349117.jpeg',
+            url: '/images/avatar_cover.jpeg',
             top: 27.5,
             left: 29,
             width: 55,
@@ -62,7 +62,7 @@ Page({
           },
           {
             type: 'image',
-            url: 'https://hybrid.xiaoying.tv/miniprogram/viva-ad/1/1531385366950.jpeg',
+            url: '/images/pic.jpeg',
             top: 136,
             left: 42.5,
             width: 290,
@@ -70,7 +70,7 @@ Page({
           },
           {
             type: 'image',
-            url: 'https://hybrid.xiaoying.tv/miniprogram/viva-ad/1/1531385433625.jpeg',
+            url: '/images/wxacode.jpeg',
             top: 443,
             left: 85,
             width: 68,
