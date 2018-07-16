@@ -28,7 +28,10 @@ Component({
     isPainting: false
   },
   ctx: null,
+  cache: {},
   ready () {
+    wx.removeStorageSync('canvasdrawer_pic_cache')
+    this.cache = wx.getStorageSync('canvasdrawer_pic_cache') || {}
     this.ctx = wx.createCanvasContext('canvasdrawer', this)
   },
   methods: {
@@ -69,6 +72,7 @@ Component({
     downLoadImages (index) {
       const { imageList, tempFileList } = this.data
       if (index < imageList.length) {
+        // console.log(imageList[index])
         this.getImageInfo(imageList[index]).then(file => {
           tempFileList.push(file)
           this.setData({
@@ -96,6 +100,7 @@ Component({
         }
       }
       this.ctx.draw(true, () => {
+        wx.setStorageSync('canvasdrawer_pic_cache', this.cache)
         this.saveImageToLocal()
       })
     },
@@ -193,20 +198,26 @@ Component({
     getImageInfo (url) {
       return new Promise((resolve, reject) => {
         /* 获得要在画布上绘制的图片 */
-        const objExp = new RegExp(/^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/)
-        if (objExp.test(url)) {
-          wx.getImageInfo({
-            src: url,
-            complete (res) {
-              if (res.errMsg === 'getImageInfo:ok') {
-                resolve(res.path)
-              } else {
-                reject(new Error('getImageInfo fail'))
-              }
-            }
-          })
+        if (this.cache[url]) {
+          resolve(this.cache[url])
         } else {
-          resolve(url)
+          const objExp = new RegExp(/^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/)
+          if (objExp.test(url)) {
+            wx.getImageInfo({
+              src: url,
+              complete: res => {
+                if (res.errMsg === 'getImageInfo:ok') {
+                  this.cache[url] = res.path
+                  resolve(res.path)
+                } else {
+                  reject(new Error('getImageInfo fail'))
+                }
+              }
+            })
+          } else {
+            this.cache[url] = url
+            resolve(url)
+          }
         }
       })
     },
