@@ -94,7 +94,7 @@ Component({
           })
           imageIndex++
         } else if (views[i].type === 'text') {
-          if (!wx.canIUse('measureText')) {
+          if (!this.ctx.measureText) {
             wx.showModal({
               title: '提示',
               content: '当前微信版本过低，无法使用 measureText 功能，请升级到最新微信版本后重试。'
