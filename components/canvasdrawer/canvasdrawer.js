@@ -9,6 +9,7 @@ Component({
         if (!this.data.isPainting) {
           if (newVal.width && newVal.height) {
             this.setData({
+              showCanvas: true,
               isPainting: true
             })
             this.readyPigment()
@@ -18,6 +19,8 @@ Component({
     }
   },
   data: {
+    showCanvas: false,
+
     width: 100,
     height: 100,
 
@@ -45,14 +48,14 @@ Component({
       const inter = setInterval(() => {
         if (this.ctx) {
           clearInterval(inter)
-          this.ctx.clearActions()
-          this.drawRect({
-            background: 'white',
-            top: 0,
-            left: 0,
-            width,
-            height
-          })
+          // this.ctx.clearActions()
+          // this.drawRect({
+          //   background: 'white',
+          //   top: 0,
+          //   left: 0,
+          //   width,
+          //   height
+          // })
           this.getImageList(views)
           this.downLoadImages(0)
         }
@@ -183,7 +186,7 @@ Component({
           background: color,
           top: top + fontSize * 1.2,
           left: left - 1,
-          width: this.ctx.measureText(content).width + 2,
+          width: this.ctx.measureText(content).width + 3,
           height: 1
         })
       } else if (textDecoration === 'line-through') {
@@ -191,7 +194,7 @@ Component({
           background: color,
           top: top + fontSize * 0.6,
           left: left - 1,
-          width: this.ctx.measureText(content).width + 2,
+          width: this.ctx.measureText(content).width + 3,
           height: 1
         })
       }
@@ -239,12 +242,16 @@ Component({
         success: res => {
           if (res.errMsg === 'canvasToTempFilePath:ok') {
             this.setData({
+              showCanvas: false,
               isPainting: false,
               imageList: [],
               tempFileList: []
             })
             this.triggerEvent('getImage', {tempFilePath: res.tempFilePath})
           }
+        },
+        fail: res => {
+
         } 
       }, this)
     }
