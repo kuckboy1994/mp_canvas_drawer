@@ -7,13 +7,18 @@ Component({
       value: {view: []},
       observer (newVal, oldVal) {
         if (!this.data.isPainting) {
-          if (JSON.stringify(newVal) !== JSON.stringify(oldVal) &&
-            newVal && newVal.width && newVal.height) {
-            this.setData({
-              showCanvas: true,
-              isPainting: true
-            })
-            this.readyPigment()
+          if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+            if (newVal && newVal.width && newVal.height) {
+              this.setData({
+                showCanvas: true,
+                isPainting: true
+              })
+              this.readyPigment()
+            }
+          } else {
+            if (newVal && newVal.mode !== 'same') {
+              this.triggerEvent('getImage', {errMsg: 'canvasdrawer:samme params'})
+            }
           }
         }
       }
@@ -97,6 +102,8 @@ Component({
               title: '提示',
               content: '当前微信版本过低，无法使用 measureText 功能，请升级到最新微信版本后重试。'
             })
+            this.triggerEvent('getImage', {errMsg: 'canvasdrawer:version too low'})
+            return
           } else {
             this.drawText(views[i])
           }
@@ -104,7 +111,7 @@ Component({
           this.drawRect(views[i])
         }
       }
-      this.ctx.draw(true, () => {
+      this.ctx.draw(false, () => {
         wx.setStorageSync('canvasdrawer_pic_cache', this.cache)
         this.saveImageToLocal()
       })
@@ -112,14 +119,14 @@ Component({
     drawImage (params) {
       this.ctx.save()
       const { url, top = 0, left = 0, width = 0, height = 0, borderRadius = 0 } = params
-      if (borderRadius) {
-        this.ctx.beginPath()
-        this.ctx.arc(left + borderRadius, top + borderRadius, borderRadius, 0, 2 * Math.PI)
-        this.ctx.clip()
-        this.ctx.drawImage(url, left, top, width, height)
-      } else {
-        this.ctx.drawImage(url, left, top, width, height)
-      }
+      // if (borderRadius) {
+      //   this.ctx.beginPath()
+      //   this.ctx.arc(left + borderRadius, top + borderRadius, borderRadius, 0, 2 * Math.PI)
+      //   this.ctx.clip()
+      //   this.ctx.drawImage(url, left, top, width, height)
+      // } else {
+      this.ctx.drawImage(url, left, top, width, height)
+      // }
       this.ctx.restore()
     },
     drawText (params) {
@@ -208,29 +215,13 @@ Component({
     },
     drawRect (params) {
       this.ctx.save()
-      // console.log(params)
-      const { background, top = 0, left = 0, width = 0, height = 0, borderRadius = 0 } = params
-      if (borderRadius) {
-        // this.ctx.setGlobalAlpha(0);
-        // this.ctx.setFillStyle('white');
-        // this.ctx.beginPath()
-        // this.ctx.arc(left + borderRadius, top + borderRadius, borderRadius, 0, 2 * Math.PI)
-        // this.ctx.closePath();
-        // this.ctx.fill();
-        // this.ctx.clip()
-        // this.ctx.setGlobalAlpha(1);
-        this.ctx.setFillStyle(background)
-        this.ctx.fillRect(left, top, width, height)
-      } else {
-        this.ctx.setFillStyle(background)
-        this.ctx.fillRect(left, top, width, height)
-      }
-      
+      const { background, top = 0, left = 0, width = 0, height = 0 } = params
+      this.ctx.setFillStyle(background)
+      this.ctx.fillRect(left, top, width, height)
       this.ctx.restore()
     },
     getImageInfo (url) {
       return new Promise((resolve, reject) => {
-        /* 获得要在画布上绘制的图片 */
         if (this.cache[url]) {
           resolve(this.cache[url])
         } else {
@@ -243,6 +234,7 @@ Component({
                   this.cache[url] = res.path
                   resolve(res.path)
                 } else {
+                  this.triggerEvent('getImage', {errMsg: 'canvasdrawer:download fail'})
                   reject(new Error('getImageInfo fail'))
                 }
               }
@@ -262,7 +254,7 @@ Component({
         width,
         height,
         canvasId: 'canvasdrawer',
-        success: res => {
+        complete: res => {
           if (res.errMsg === 'canvasToTempFilePath:ok') {
             this.setData({
               showCanvas: false,
@@ -270,12 +262,11 @@ Component({
               imageList: [],
               tempFileList: []
             })
-            this.triggerEvent('getImage', {tempFilePath: res.tempFilePath})
+            this.triggerEvent('getImage', {tempFilePath: res.tempFilePath, errMsg: 'canvasdrawer:ok'})
+          } else {
+            this.triggerEvent('getImage', {errMsg: 'canvasdrawer:fail'})
           }
-        },
-        fail: res => {
-
-        } 
+        }
       }, this)
     }
   }

@@ -1,5 +1,7 @@
 ## canvas drawer
 
+新增 [mpvue_canvas_drawer](https://github.com/kuckboy1994/mpvue_canvas_drawer)。之后同步更新。
+
 做微信小程序中最好用的 `canvas` 绘图组件之一。
 
 当前环境下，大家都非常需要分享到朋友圈这个功能，但是实现起来各有心酸（坑比较多），所以才有了如下的 `canvas` 绘图工具。 
@@ -173,8 +175,7 @@ git clone https://github.com/kuckboy1994/mp_canvas_drawer
   ```
   </details>
 
-## API
-
+## API  
 
 <details><summary>对象结构一览</summary><br>
 
@@ -212,10 +213,12 @@ git clone https://github.com/kuckboy1994/mp_canvas_drawer
   ]
 }
 ```
-</details>
+</details>  
 
 
-数据对象的第一层需要三个参数: `width`、`height`、`views`。配置中所有的数字都是没有单位的。这就意味着 `canvas` 绘制的是一个比例图。具体显示的大小直接把返回的图片路径放置到 `image` 标签中即可。
+数据对象的第一层需要三个参数: `width`、`height`、`mode`、`views`。配置中所有的数字都是没有单位的。这就意味着 `canvas` 绘制的是一个比例图。具体显示的大小直接把返回的图片路径放置到 `image` 标签中即可。
+
+`mode` 可选值有 `same`, 默认值为空，常规下尽量不要使用。如要使用请看 Q&A的第1点。
 
 当前可以绘制3种类型的配置: `image`、`text`、`rect`。配置的属性基本上使用的都是 `css` 的驼峰名称，还是比较好理解的。 
 
@@ -268,16 +271,17 @@ height | 要画多高 | 0 |
     wx.hideLoading()
     ```
     具体可以参考项目下的 `/pages/multiple`
-
-1. 二维码和小程序码如何绘制？
+1. [mpvue] 由于 `canvasdrawer` 不主动呈现绘制内容，而是交给调用者去使用 `image` 来展示，所以在mpvue更新数据就会render整个组件的，之后 `canvasdrawer` 又会重新被渲染，导致无限循环，所以默认情况下我把代码改为，传入的 `painting` 和之前的一样的话，组件就不渲染了。只有出现差异的内容才会更新（触发回调），这种个人认为还是可以接受的。
+    增加顶层参数 `mode`, `mode: 'same'` 为可以绘制同样的内容。在 `mpvue` 模式下`勿用`。
+2. 二维码和小程序码如何绘制？
     - 二维码和小程序码可以通过调用[微信官方的接口](https://developers.weixin.qq.com/miniprogram/dev/api/qrcode.html)产生，需要后端配合。
     - 然后走 `type: image` 类型进行绘制即可。
-2. 绘制流程相关
+3. 绘制流程相关
     - `views` 数组中的顺序代表绘画的先后顺序，会有覆盖的现象。请各位使用者注意。
-3. 如何实现圆形头像？
+4. 如何实现圆形头像？
     - 由于完成一些效果，例如： `文字下划线` 等。必须要使用微信小程序 `rect` 相关的接口，和 `clip` 接口感觉相处的不好（存在bug）。可以查看 [微信小程序社区的帖子](https://developers.weixin.qq.com/blogdetail?action=get_post_info&docid=00086255ef09d0df4b0751f6651000&highline=clip&token=895863755&lang=zh_CN)。
     - so，提供一种解决方式：使用一张中间镂空的图片盖在头像上。
-4. `canvas drawer` 组件为什么不直接显示canvas画板和其内容呢？
+5. `canvas drawer` 组件为什么不直接显示canvas画板和其内容呢？
     - 考虑到大部分场景，我们都是用来把图片保存到本地，或用以展示。
     - 保存到本地，返回临时文件给调用者一定是最佳的解决方式。
     - 展示，转化成图片之后，就可以使用 `image` 基础组件的所有显示模式了，还能设置宽高。
@@ -288,9 +292,10 @@ height | 要画多高 | 0 |
 - [x] 增加 `measureText` 方法对于低版本的提示
 - [x] 安卓下文本绘制稳定性修复
 - [ ] 增加圆角属性 `borderRadius`、`border` 支持
-- [ ] 错误异常回调支持
+- [x] 错误异常回调支持
 - [ ] 预缓存模式
 - [ ] 优化 `measureText` 测量模式
+- [x] mpvue 版本小程序
 
 ## TIPS
 

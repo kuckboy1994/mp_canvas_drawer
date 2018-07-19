@@ -142,10 +142,13 @@ Page({
   })
   },
   eventGetImage (event) {
+    console.log(event)
     wx.hideLoading()
-    const { tempFilePath } = event.detail
-    this.setData({
-      shareImage: tempFilePath
-    })
+    const { tempFilePath, errMsg } = event.detail
+    if (errMsg === 'canvasdrawer:ok') {
+      this.setData({
+        shareImage: tempFilePath
+      })
+    }
   }
 })
