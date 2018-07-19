@@ -57,7 +57,7 @@ Component({
           this.ctx.clearActions()
           this.ctx.save()
           this.getImageList(views)
-          this.downLoadImages()
+          this.downLoadImages(0)
         }
       }, 100)
     },
@@ -72,13 +72,20 @@ Component({
         imageList
       })
     },
-    downLoadImages () {
+    downLoadImages (index) {
       const { imageList, tempFileList } = this.data
-      Promise.all(imageList.map(url => this.getImageInfo(url))).then(files => {
-        tempFileList.push(...files)
-        this.setData({ tempFileList })
+      if (index < imageList.length) {
+        // console.log(imageList[index])
+        this.getImageInfo(imageList[index]).then(file => {
+          tempFileList.push(file)
+          this.setData({
+            tempFileList
+          })
+          this.downLoadImages(index + 1)
+        })
+      } else {
         this.startPainting()
-      });
+      }
     },
     startPainting () {
       const { tempFileList, painting: { views } } = this.data
