@@ -7,7 +7,8 @@ Component({
       value: {view: []},
       observer (newVal, oldVal) {
         if (!this.data.isPainting) {
-          if (newVal.width && newVal.height) {
+          if (JSON.stringify(newVal) !== JSON.stringify(oldVal) &&
+            newVal && newVal.width && newVal.height) {
             this.setData({
               showCanvas: true,
               isPainting: true
@@ -48,14 +49,8 @@ Component({
       const inter = setInterval(() => {
         if (this.ctx) {
           clearInterval(inter)
-          // this.ctx.clearActions()
-          // this.drawRect({
-          //   background: 'white',
-          //   top: 0,
-          //   left: 0,
-          //   width,
-          //   height
-          // })
+          this.ctx.clearActions()
+          this.ctx.save()
           this.getImageList(views)
           this.downLoadImages(0)
         }
@@ -115,26 +110,36 @@ Component({
       })
     },
     drawImage (params) {
-      // console.log(params)
-      const { url, top = 0, left = 0, width = 0, height = 0 } = params
-      this.ctx.drawImage(url, left, top, width, height)
+      this.ctx.save()
+      const { url, top = 0, left = 0, width = 0, height = 0, borderRadius = 0 } = params
+      if (borderRadius) {
+        this.ctx.beginPath()
+        this.ctx.arc(left + borderRadius, top + borderRadius, borderRadius, 0, 2 * Math.PI)
+        this.ctx.clip()
+        this.ctx.drawImage(url, left, top, width, height)
+      } else {
+        this.ctx.drawImage(url, left, top, width, height)
+      }
+      this.ctx.restore()
     },
     drawText (params) {
-      const { 
-        MaxLineNumber = 2, 
-        breakWord = false, 
-        color = 'black', 
-        content = '', 
-        fontSize = 16, 
-        top = 0, 
-        left = 0, 
-        lineHeight = 20, 
-        textAlign = 'left', 
-        width, 
+      this.ctx.save()
+      const {
+        MaxLineNumber = 2,
+        breakWord = false,
+        color = 'black',
+        content = '',
+        fontSize = 16,
+        top = 0,
+        left = 0,
+        lineHeight = 20,
+        textAlign = 'left',
+        width,
         bolder = false,
         textDecoration = 'none'
       } = params
-
+      
+      this.ctx.beginPath()
       this.ctx.setTextBaseline('top')
       this.ctx.setTextAlign(textAlign)
       this.ctx.setFillStyle(color)
@@ -170,6 +175,8 @@ Component({
         this.drawTextLine(left, fillTop, textDecoration, color, fontSize, fillText)
       }
       
+      this.ctx.restore()
+
       if (bolder) {
         this.drawText({
           ...params,
@@ -200,10 +207,26 @@ Component({
       }
     },
     drawRect (params) {
+      this.ctx.save()
       // console.log(params)
-      const { background, top = 0, left = 0, width = 0, height = 0 } = params
-      this.ctx.setFillStyle(background)
-      this.ctx.fillRect(left, top, width, height)
+      const { background, top = 0, left = 0, width = 0, height = 0, borderRadius = 0 } = params
+      if (borderRadius) {
+        // this.ctx.setGlobalAlpha(0);
+        // this.ctx.setFillStyle('white');
+        // this.ctx.beginPath()
+        // this.ctx.arc(left + borderRadius, top + borderRadius, borderRadius, 0, 2 * Math.PI)
+        // this.ctx.closePath();
+        // this.ctx.fill();
+        // this.ctx.clip()
+        // this.ctx.setGlobalAlpha(1);
+        this.ctx.setFillStyle(background)
+        this.ctx.fillRect(left, top, width, height)
+      } else {
+        this.ctx.setFillStyle(background)
+        this.ctx.fillRect(left, top, width, height)
+      }
+      
+      this.ctx.restore()
     },
     getImageInfo (url) {
       return new Promise((resolve, reject) => {
