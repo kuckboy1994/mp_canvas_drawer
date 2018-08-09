@@ -2,6 +2,8 @@
 
 新增 [mpvue_canvas_drawer](https://github.com/kuckboy1994/mpvue_canvas_drawer)。之后同步更新。
 
+新增由[simmzl](https://github.com/simmzl)开发移植的[wepy_canvas_drawer](https://github.com/simmzl/wepy_canvas_drawer)。之后同步更新。
+
 做微信小程序中最好用的 `canvas` 绘图组件之一。
 
 当前环境下，大家都非常需要分享到朋友圈这个功能，但是实现起来各有心酸（坑比较多），所以才有了如下的 `canvas` 绘图工具。 
