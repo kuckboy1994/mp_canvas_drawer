@@ -30,8 +30,6 @@ Component({
     width: 100,
     height: 100,
 
-    index: 0,
-    imageList: [],
     tempFileList: [],
 
     isPainting: false
@@ -56,39 +54,42 @@ Component({
           clearInterval(inter)
           this.ctx.clearActions()
           this.ctx.save()
-          this.getImageList(views)
-          this.downLoadImages(0)
+          this.getImagesInfo(views)
         }
       }, 100)
     },
-    getImageList (views) {
+    getImagesInfo (views) {
       const imageList = []
       for (let i = 0; i < views.length; i++) {
         if (views[i].type === 'image') {
-          imageList.push(views[i].url)
+          imageList.push(this.getImageInfo(views[i].url))
         }
       }
-      this.setData({
-        imageList
-      })
-    },
-    downLoadImages (index) {
-      const { imageList, tempFileList } = this.data
-      if (index < imageList.length) {
-        // console.log(imageList[index])
-        this.getImageInfo(imageList[index]).then(file => {
-          tempFileList.push(file)
-          this.setData({
-            tempFileList
+
+      const loadTask = []
+      for (let i = 0; i < Math.ceil(imageList.length / 8); i++) {
+        loadTask.push(new Promise((resolve, reject) => {
+          Promise.all(imageList.splice(i * 8, 8)).then(res => {
+            resolve(res)
+          }).catch(res => {
+            reject(res)
           })
-          this.downLoadImages(index + 1)
-        })
-      } else {
-        this.startPainting()
+        }))
       }
+      Promise.all(loadTask).then(res => {
+        let tempFileList = []
+        for (let i = 0; i < res.length; i++) {
+          tempFileList = tempFileList.concat(res[i])
+        }
+        this.setData({
+          tempFileList
+        })
+        this.startPainting()
+      })
     },
     startPainting () {
       const { tempFileList, painting: { views } } = this.data
+      console.log(tempFileList)
       for (let i = 0, imageIndex = 0; i < views.length; i++) {
         if (views[i].type === 'image') {
           this.drawImage({
@@ -120,7 +121,7 @@ Component({
           // 延迟保存图片，解决安卓生成图片错位bug。
           setTimeout(() => {
             this.saveImageToLocal()
-          }, 800);
+          }, 800)
         }
       })
     },
@@ -273,7 +274,6 @@ Component({
             this.setData({
               showCanvas: false,
               isPainting: false,
-              imageList: [],
               tempFileList: []
             })
             this.triggerEvent('getImage', {tempFilePath: res.tempFilePath, errMsg: 'canvasdrawer:ok'})
